@@ -1,0 +1,197 @@
+{
+  "masks":
+  {
+    "images/000001.png":
+    {"mask": "images/000001.png",
+      "color_categories":
+      {
+        "(0, 0, 255)": {"category": "egg_1", "super_category": "eggs"},
+        "(100, 0, 0)": {"category": "egg_2", "super_category": "eggs"}
+      }
+    },
+    "images/000002.png":
+    {
+      "mask": "images/000002.png",
+      "color_categories":
+      {
+        "(0, 0, 225)": {"category": "egg_1", "super_category": "eggs"},
+        "(100, 0, 0)": {"category": "egg_2", "super_category": "eggs"}
+      }
+    },
+    "images/000003.png":
+    {
+      "mask": "images/000003.png",
+      "color_categories":
+      {
+        "(0, 0, 255)": {"category": "egg_1", "super_category": "eggs"}
+      }
+    },
+    "images/000004.png":
+    {
+      "mask": "images/000004.png",
+      "color_categories":
+      {
+        "(0, 0, 255)": {"category": "egg_1", "super_category": "eggs"}
+      }
+    },
+    "images/000005.png":
+    {
+      "mask": "images/000005.png",
+      "color_categories":
+      {
+        "(0, 0, 255)":{"category": "egg_1","super_category": "eggs"},
+        "(100, 0, 0)": {"category": "egg_2", "super_category": "eggs"}
+      }
+    },
+    "images/000006.png":
+    {
+      "mask": "images/000006.png",
+      "color_categories":
+      {
+        "(0, 0, 255)": {"category": "egg_1", "super_category": "eggs"},
+        "(100, 0, 0)": {"category": "egg_2", "super_category": "eggs"}
+      }
+    },
+    "images/000007.png":
+    {
+      "mask": "images/000007.png",
+      "color_categories":
+      {
+        "(0, 0, 255)": {"category": "egg_1", "super_category": "eggs"},
+        "(100, 0, 0)": {"category": "egg_2", "super_category": "eggs"},
+        "(0, 100, 0)": {"category": "egg_3", "super_category": "eggs"}
+      }
+    },
+    "images/000008.png":
+    {
+      "mask": "images/000008.png",
+      "color_categories":
+      {
+        "(0, 0, 255)": {"category": "egg_1", "super_category": "eggs"},
+        "(100, 0, 0)": {"category": "egg_2", "super_category": "eggs"},
+        "(0, 100, 0)": {"category": "egg_3", "super_category": "eggs"}
+      }
+    },
+    "images/000009.png":
+    {
+      "mask": "images/000009.png",
+      "color_categories":
+      {
+        "(0, 0, 255)": {"category": "egg_1", "super_category": "eggs"},
+        "(100, 0, 0)":{"category": "egg_2", "super_category": "eggs"},
+        "(0, 100, 0)": {"category": "egg_3", "super_category": "eggs"}
+      }
+    },
+    "images/000010.png":
+    {
+      "mask": "images/000010.png",
+      "color_categories":
+      {
+        "(0, 0, 255)": {"category": "egg_1", "super_category": "eggs"},
+        "(100, 0, 0)": {"category": "egg_2", "super_category": "eggs"},
+        "(0, 100, 0)": {"category": "egg_3", "super_category": "eggs"}
+      }
+    },
+    "images/000011.png":
+    {
+      "mask": "images/000011.png",
+      "color_categories":
+      {
+        "(0, 0, 255)": {"category": "egg_1", "super_category": "eggs"}
+      }
+    },
+    "images/000012.png":
+    {
+      "mask": "images/000012.png",
+      "color_categories":
+      {
+        "(0, 0, 255)": {"category": "egg_1","super_category": "eggs"}
+      }
+    },
+    "images/000013.png":
+    {
+      "mask": "images/000013.png",
+      "color_categories":
+      {
+        "(0, 0, 255)": { "category": "egg_1", "super_category": "eggs"}
+      }
+    },
+    "images/000014.png":
+    {
+      "mask": "images/000014.png",
+      "color_categories":
+      {
+        "(0, 0, 255)": { "category": "egg_1", "super_category": "eggs"},
+        "(100, 0, 0)": { "category": "egg_2", "super_category": "eggs"}
+      }
+    },
+    "images/000015.png":
+    {
+      "mask": "images/000015.png",
+      "color_categories":
+      {
+        "(0, 0, 255)": { "category": "egg_1", "super_category": "eggs"},
+        "(100, 0, 0)": { "category": "egg_2", "super_category": "eggs"}
+      }
+    },
+    "images/000016.png":
+    {
+      "mask": "images/000016.png",
+      "color_categories":
+      {
+        "(0, 0, 255)": { "category": "egg_1", "super_category": "eggs"},
+        "(100, 0, 0)": { "category": "egg_2", "super_category": "eggs"},
+        "(0, 100, 0)": { "category": "egg_3", "super_category": "eggs"}
+      }
+    },
+    "images/000017.png":
+    {
+      "mask": "images/000017.png",
+      "color_categories":
+      {
+        "(0, 0, 255)": { "category": "egg_1", "super_category": "eggs"}
+      }
+    },
+    "images/000018.png":
+    {
+      "mask": "images/000018.png",
+      "color_categories":
+      {
+        "(0, 0, 255)": { "category": "egg_1", "super_category": "eggs"}
+      }
+    },
+    "images/000019.png":
+    {
+      "mask": "images/000019.png",
+      "color_categories":
+      {
+        "(0, 0, 255)": { "category": "egg_1", "super_category": "eggs"},
+        "(100, 0, 0)": { "category": "egg_2", "super_category": "eggs"},
+        "(0, 100, 0)": { "category": "egg_3", "super_category": "eggs"}
+      }
+    },
+    "images/000020.png":
+    {
+      "mask": "images/000020.png",
+      "color_categories":
+      {
+        "(0, 0, 255)": { "category": "egg_1", "super_category": "eggs"},
+        "(100, 0, 0)": { "category": "egg_2", "super_category": "eggs"},
+        "(0, 100, 0)": { "category": "egg_3", "super_category": "eggs"}
+      }
+    },
+    "images/000021.png":
+    {
+      "mask": "images/000021.png",
+      "color_categories":
+      {
+        "(0, 0, 255)": { "category": "egg_1", "super_category": "eggs"},
+        "(100, 0, 0)": { "category": "egg_2", "super_category": "eggs"}
+      }
+    }
+  },
+  "super_categories":
+  {
+    "eggs": ["egg_1", "egg_2", "egg_3"]
+  }
+}
