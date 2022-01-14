@@ -1,0 +1,18 @@
+{
+  "info":
+  {
+    "description": "Teggs dataset",
+    "version": "1",
+    "url": "no-url/datasets.com",
+    "year": 2022,
+    "contributor": "Génesis Montenegro",
+    "date_created": "11/01/2022"
+    
+  },
+  "license":{
+    "url":"no-url/licenses.com",
+    "id": 0,
+    "name": "testing"
+    
+  }
+}
