@@ -78,7 +78,7 @@
       "color_categories":
       {
         "(0, 0, 255)": {"category": "egg_1", "super_category": "eggs"},
-        "(100, 0, 0)":{"category": "egg_2", "super_category": "eggs"},
+        "(100, 0, 0)": {"category": "egg_2", "super_category": "eggs"},
         "(0, 100, 0)": {"category": "egg_3", "super_category": "eggs"}
       }
     },
