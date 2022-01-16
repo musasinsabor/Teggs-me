@@ -1,13 +1,18 @@
 from transformers import DetrFeatureExtractor, DetrForObjectDetection
 from model.dataset_creation import CocoTeggsme
-from pathlib import Path
 from model.computer_vision_model import EggsViTModel
 from PIL import Image
 
+import os
 
-my_img_folder = Path("C:/Users/Genesis/Teggs-me/dataset/images")
-my_ann_folder = Path("C:/Users/Genesis/Teggs-me/dataset/masks")
-my_ann_file = Path("C:/Users/Genesis/Teggs-me/dataset/coco_instances.json")
+directory = os.path.dirname(os.path.realpath(__file__))
+my_data = "dataset"
+my_imgs = "images"
+my_masks = "masks"
+my_file = "coco_instances.json"
+my_img_folder = os.path.join(directory, my_data, my_imgs)
+my_ann_folder = os.path.join(directory, my_data, my_masks)
+my_ann_file = os.path.join(directory, my_data, my_file)
 
 
 class PretrainedModelPrediction:

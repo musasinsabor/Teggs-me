@@ -3,10 +3,15 @@ import streamlit as st
 from PIL import Image
 from hugsvision.inference.VisionClassifierInference import VisionClassifierInference
 from transformers import ViTFeatureExtractor, ViTForImageClassification
+import os
+
+directory = os.path.dirname(os.path.realpath(__file__))
+my_default_image = "eggs_in_the_nest.jpeg"
+my_img = os.path.join(directory, my_default_image)
 
 # loading the classifier
 
-pretrained_path = "ydshieh/vit-gpt2-coco-en"
+pretrained_path = 'facebook/detr-resnet-101-dc5'
 classifier = VisionClassifierInference(
     feature_extractor=ViTFeatureExtractor.from_pretrained(pretrained_path),
     model=ViTForImageClassification.from_pretrained(pretrained_path),
@@ -18,7 +23,7 @@ st.title("Teggs-me: Eggs in Nest Image Classification App")
 
 st.write('Enjoy your day :sunglasses: and wait for **all the eggs** to be in the nest.')
 
-image = Image.open("C:/Users/Genesis/Teggs-me/dataset/images/000001.png")
+image = Image.open(my_img)
 show = st.image(image, use_column_width=True)
 
 st.sidebar.title("Upload Image")
