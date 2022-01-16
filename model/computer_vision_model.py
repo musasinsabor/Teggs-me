@@ -1,16 +1,17 @@
-from transformers import ViTFeatureExtractor, ViTForImageClassification
+from transformers import DetrFeatureExtractor, DetrForObjectDetection, DetrConfig
 from typing import Dict
 from hugsvision.nnet.VisionClassifierTrainer import VisionClassifierTrainer
-from pathlib import Path
-from dataset_creation import CocoTeggsme
 import numpy as np
 import torch
+from torch.utils.data import DataLoader
 
 
 class EggsViTModel:
     """This is a computer vision model in ImageClassification task wrapped in huggingface."""
+
     def __init__(self,
-                 parameters):
+                 parameters,
+                 dataset):
         """It takes a parameters Dict where it can be specified the following data:
             model_name(str): Model name in huggingface/models storage.
             num_labels(int): Specification of the label numbers.
@@ -20,28 +21,27 @@ class EggsViTModel:
         """
         self.parameters: Dict = parameters
         self.model_name = parameters["model_name"]
-        self.num_labels = parameters["num_labels"]
         self.model_training_parameters = parameters["model_training_parameters"]
-        self.dataset = self.dataset_obj()
+        self.id2label = {'eggs_1': 0, 'eggs_2': 1, 'eggs_3':2}
+        self.feature_extractor = DetrFeatureExtractor.from_pretrained(self.model_name)
+        self.dataset = self.dataset_obj(dataset)
         self.model = self.pretrained_model()
-        self.feature_extractor = ViTFeatureExtractor.from_pretrained(self.model_name)
+        self.my_dataset = dataset
 
-    def dataset_obj(self):
+    def dataset_obj(self, dataset):
         """
         This method uses the dataset info to create a dataset instance.
         :returns a Dataset object
         """
-        my_img_folder = Path("C:/Users/Genesis/Teggs-me/dataset/images")
-        my_ann_folder = Path("C:/Users/Genesis/Teggs-me/dataset/images/masks")
-        my_ann_file = Path("C:/Users/Genesis/Teggs-me/dataset/coco_instances.json")
-        dataset = CocoTeggsme(my_img_folder, my_ann_folder, my_ann_file, self.feature_extractor)
         return dataset
 
     def pretrained_model(self):
         """
         This method specify a pretrained ViModel.
         """
-        pt_model = ViTForImageClassification.from_pretrained(self.model_name, num_labels=len(self.num_labels))
+        config = DetrConfig.from_pretrained(self.model_name, ignore_mismatched_sizes=True, force_download=True)
+        config.num_labels = len(self.id2label)
+        pt_model = DetrForObjectDetection(config)
         return pt_model
 
     def model_training(self):
@@ -57,10 +57,12 @@ class EggsViTModel:
             test=val_dataset,
             output_dir="./out/",
             lr=2e-5,
-            fp16=True,
-            model=ViTForImageClassification.from_pretrained(
-                self.model,
-                num_labels=3,
+            model=DetrForObjectDetection.from_pretrained(
+                self.model_name,
+                force_download=True,
+                num_labels=len(self.id2label),
+                id2label=self.id2label,
+                ignore_mismatched_sizes=True
             ),
             feature_extractor=self.feature_extractor,
         )

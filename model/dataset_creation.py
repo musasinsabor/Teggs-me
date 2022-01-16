@@ -1,44 +1,75 @@
+import os
 import torch
-import json
-from pathlib import Path
+import torch.utils.data
 from PIL import Image
+from pycocotools.coco import COCO
+import numpy as np
 
 
 class CocoTeggsme(torch.utils.data.Dataset):
     """
     This class encapsulate a Dataset definition
     """
-    def __init__(self, img_folder, ann_folder, ann_file, feature_extractor):
-        with open(ann_file, 'r') as f:
-            self.coco = json.load(f)
 
-        # sort 'images' field so that they are aligned with 'annotations'
-        # i.e., in alphabetical order
-        self.coco['images'] = sorted(self.coco['images'], key=lambda x: x['id'])
-        # sanity check
-        if "annotations" in self.coco:
-            for img, ann in zip(self.coco['images'], self.coco['annotations']):
-                assert img['file_name'][:-4] == ann['file_name'][:-4]
+    def __init__(self, root, annotation, transforms=None):
+        self.root = root
+        self.transforms = transforms
+        self.coco = COCO(annotation)
+        self.ids = list(sorted(self.coco.imgs.keys()))
 
-        self.img_folder = img_folder
-        self.ann_folder = Path(ann_folder)
-        self.ann_file = ann_file
-        self.feature_extractor = feature_extractor
+    def __getitem__(self, index):
+        # Own coco file
+        coco = self.coco
+        # Image ID
+        img_id = self.ids[index]
+        # List: get annotation id from coco
+        ann_ids = coco.getAnnIds(imgIds=img_id)
+        # Dictionary: target coco_annotation file for an image
+        coco_annotation = coco.loadAnns(ann_ids)
+        # path for input image
+        path = coco.loadImgs(img_id)[0]['file_name']
+        # open the input image
+        img = Image.open(os.path.join(self.root, path))
+        img = img.convert('RGB')
 
-    def __getitem__(self, idx):
-        ann_info = self.coco['annotations'][idx] if "annotations" in self.coco else self.coco['images'][idx]
-        img_path = Path(self.img_folder) / ann_info['file_name'].replace('.png', '.jpg')
+        # number of objects in the image
+        num_objs = len(coco_annotation)
 
-        img = Image.open(img_path).convert('RGB')
+        # Bounding boxes for objects
+        # In coco format, bbox = [xmin, ymin, width, height]
+        # In pytorch, the input should be [xmin, ymin, xmax, ymax]
+        boxes = []
+        for i in range(num_objs):
+            xmin = coco_annotation[i]['bbox'][0]
+            ymin = coco_annotation[i]['bbox'][1]
+            xmax = xmin + coco_annotation[i]['bbox'][2]
+            ymax = ymin + coco_annotation[i]['bbox'][3]
+            boxes.append([xmin, ymin, xmax, ymax])
+        boxes = torch.as_tensor(boxes, dtype=torch.float32)
+        # Labels (In my case, I only one class: target class or background)
+        labels = torch.ones((num_objs,), dtype=torch.int64)
+        # Tensorise img_id
+        img_id = torch.tensor([img_id])
+        # Size of bbox (Rectangular)
+        areas = []
+        for i in range(num_objs):
+            areas.append(coco_annotation[i]['area'])
+        areas = torch.as_tensor(areas, dtype=torch.float32)
+        # Iscrowd
+        iscrowd = torch.zeros((num_objs,), dtype=torch.int64)
 
-        # preprocess image and target (converting target to DETR format, resizing + normalization of both image and
-        # target)
-        encoding = self.feature_extractor(images=img, annotations=ann_info, masks_path=self.ann_folder,
-                                          return_tensors="pt")
-        pixel_values = encoding["pixel_values"].squeeze()  # remove batch dimension
-        target = encoding["labels"][0]  # remove batch dimension
+        # Annotation is in dictionary format
+        my_annotation = {}
+        my_annotation["boxes"] = boxes
+        my_annotation["labels"] = labels
+        my_annotation["image_id"] = img_id
+        my_annotation["area"] = areas
+        my_annotation["iscrowd"] = iscrowd
 
-        return pixel_values, target
+        if self.transforms is not None:
+            img = self.transforms(img)
+
+        return img, my_annotation
 
     def __len__(self):
-        return len(self.coco['images'])
+        return len(self.ids)
