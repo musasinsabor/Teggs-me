@@ -1,4 +1,4 @@
-from transformers import ViTFeatureExtractor, ViTForImageClassification, ViTConfig
+from transformers import DetrFeatureExtractor, DetrForObjectDetection, DetrConfig
 from typing import Dict
 from hugsvision.nnet.VisionClassifierTrainer import VisionClassifierTrainer
 import numpy as np
@@ -21,9 +21,9 @@ class EggsViTModel:
         """
         self.parameters: Dict = parameters
         self.model_name = parameters["model_name"]
-        self.num_labels = parameters["num_labels"]
         self.model_training_parameters = parameters["model_training_parameters"]
-        self.feature_extractor = ViTFeatureExtractor.from_pretrained(self.model_name)
+        self.id2label = {'eggs_1': 0, 'eggs_2': 1, 'eggs_3':2}
+        self.feature_extractor = DetrFeatureExtractor.from_pretrained(self.model_name)
         self.dataset = self.dataset_obj(dataset)
         self.model = self.pretrained_model()
         self.my_dataset = dataset
@@ -39,9 +39,9 @@ class EggsViTModel:
         """
         This method specify a pretrained ViModel.
         """
-        config = ViTConfig.from_pretrained(self.model_name, ignore_mismatched_sizes=True)
-        config.num_labels = self.num_labels
-        pt_model = ViTForImageClassification(config)
+        config = DetrConfig.from_pretrained(self.model_name, ignore_mismatched_sizes=True, force_download=True)
+        config.num_labels = len(self.id2label)
+        pt_model = DetrForObjectDetection(config)
         return pt_model
 
     def model_training(self):
@@ -57,9 +57,11 @@ class EggsViTModel:
             test=val_dataset,
             output_dir="./out/",
             lr=2e-5,
-            model=ViTForImageClassification.from_pretrained(
+            model=DetrForObjectDetection.from_pretrained(
                 self.model_name,
-                num_labels=3,
+                force_download=True,
+                num_labels=len(self.id2label),
+                id2label=self.id2label,
                 ignore_mismatched_sizes=True
             ),
             feature_extractor=self.feature_extractor,
