@@ -67,3 +67,12 @@ class EggsViTModel:
             feature_extractor=self.feature_extractor,
         )
         return trainer.train()
+
+    def save(self, local_path):
+        """
+        NotImplementedYet
+        this method will save the model after training.
+        :return: model trained
+        """
+        return local_path
+

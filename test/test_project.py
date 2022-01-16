@@ -1,11 +1,11 @@
 import unittest
 from pathlib import Path
 from model.dataset_creation import CocoTeggsme
+from model.pre_trained_model_prediction import PretrainedModelPrediction
 from transformers import ViTFeatureExtractor
 import numpy as np
 import torch
 from model.computer_vision_model import EggsViTModel
-
 
 
 class MyDataset(unittest.TestCase):
@@ -45,3 +45,20 @@ class MyModel(unittest.TestCase):
         self.model = EggsViTModel(my_parameters, self.dataset)
         self.model.model_training()
         assert len(self.model.dataset) == 21
+
+
+class MyPretrainedPrediction(unittest.TestCase):
+    """
+    My pretrained model prediction testing.
+    """
+
+    def test_pretrained_model_prediction(self):
+        self.prediction = PretrainedModelPrediction('facebook/detr-resnet-101-dc5')
+        pred = self.prediction.image_classification_classifier_pretrained("C:/Users/Genesis/Teggs-me/dataset/images/000001.png")
+        assert pred != None
+
+    def test_my_model_trained_prediction(self):
+        self.prediction = PretrainedModelPrediction("./my_model")
+        pred = self.prediction.image_classification_classifier_pretrained(
+            "C:/Users/Genesis/Teggs-me/dataset/images/000001.png")
+        assert pred != None
