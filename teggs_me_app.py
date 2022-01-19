@@ -10,6 +10,12 @@ my_img = os.path.join(directory, my_default_image)
 
 # loading the classifier
 classifier = PretrainedObjectDetectionModelPrediction()
+
+# If no, then initialize classifier
+# If classifier is already initialized, don't do anything
+if 'classifier' not in st.session_state:
+    st.session_state.classifier = classifier
+
 # Designing the interface
 st.title("Teggs-me: Eggs in Nest Image Classification App")
 
@@ -31,8 +37,8 @@ else:
     st.sidebar.write("Your image is gonna start being classified")
     u_img = Image.open(uploaded_file)
     show.image(u_img, 'Uploaded Image', use_column_width=True)
-    with st.spinner('Pretrained Classifying ...'):
-        prediction = classifier.image_classification_classifier_pretrained(uploaded_file)
+    with st.spinner('Model Classifying ...'):
+        prediction = classifier.plot_image_classified(uploaded_file)
         st.success('Done!')
         st.sidebar.header("Predicted class:")
         st.sidebar.write(prediction)
