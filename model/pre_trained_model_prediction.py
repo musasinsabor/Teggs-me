@@ -1,11 +1,14 @@
 from transformers import DetrFeatureExtractor, DetrForObjectDetection
 from model.dataset_creation import CocoTeggsme
 from model.computer_vision_model import EggsViTModel
-from hugsvision.inference.VisionClassifierInference import VisionClassifierInference
 from PIL import Image
 import torch
 import matplotlib.pyplot as plt
 import os
+import torch
+import torchvision.transforms as T
+
+torch.set_grad_enabled(False)
 
 directory = os.path.dirname(os.path.realpath(__file__))
 my_data = "dataset"
@@ -29,9 +32,26 @@ class PretrainedObjectDetectionModelPrediction:
         self.model_output_path = "./my_model"
         self.feature_extractor_pretrained = DetrFeatureExtractor.from_pretrained(self.img_class_pretrained)
         self.model_pretrained = DetrForObjectDetection.from_pretrained(self.img_class_pretrained)
-        self.COLORS = [[0.000, 0.447, 0.741], [0.850, 0.325, 0.098], [0.929, 0.694, 0.125],
-                       [0.494, 0.184, 0.556], [0.466, 0.674, 0.188], [0.301, 0.745, 0.933]]
+        self.COLORS = [[0.000, 0.447, 0.741], [0.850, 0.325, 0.098], [0.929, 0.694, 0.125], [0.494, 0.184, 0.556], [0.466, 0.674, 0.188], [0.301, 0.745, 0.933]]
         self.id2label = self.model_pretrained.config.id2label
+        self.classes = [
+            'N/A', 'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus',
+            'train', 'truck', 'boat', 'traffic light', 'fire hydrant', 'N/A',
+            'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse',
+            'sheep', 'cow', 'elephant', 'bear', 'zebra', 'giraffe', 'N/A', 'backpack',
+            'umbrella', 'N/A', 'N/A', 'handbag', 'tie', 'suitcase', 'frisbee', 'skis',
+            'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove',
+            'skateboard', 'surfboard', 'tennis racket', 'bottle', 'N/A', 'wine glass',
+            'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple', 'sandwich',
+            'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake',
+            'chair', 'couch', 'potted plant', 'bed', 'N/A', 'dining table', 'N/A',
+            'N/A', 'toilet', 'N/A', 'tv', 'laptop', 'mouse', 'remote', 'keyboard',
+            'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'N/A',
+            'book', 'clock', 'vase', 'scissors', 'teddy bear', 'hair drier',
+            'toothbrush'
+        ]
+        self.image_transform = T.Compose(
+            [T.Resize(420), T.ToTensor(), T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
 
     def image_classification_classifier_pretrained(self, uploaded_file):
         """
@@ -41,12 +61,9 @@ class PretrainedObjectDetectionModelPrediction:
         pixels = img.load()
         inputs = self.feature_extractor_pretrained(images=img, return_tensors="pt")
         outputs = self.model_pretrained(**inputs)
-        logits = outputs.logits
-        bboxes = outputs.pred_boxes
 
-        return logits, bboxes
+        return outputs
 
-    # for output bounding box post-processing
     def box_cxcywh_to_xyxy(self, x):
         x_c, y_c, w, h = x.unbind(1)
         b = [(x_c - 0.5 * w), (y_c - 0.5 * h),
@@ -55,7 +72,7 @@ class PretrainedObjectDetectionModelPrediction:
 
     def rescale_bboxes(self, out_bbox, size):
         img_w, img_h = size
-        b = self.box_cxcywh_to_xyxy(out_bbox)
+        b = self, self.box_cxcywh_to_xyxy(out_bbox)
         b = b * torch.tensor([img_w, img_h, img_w, img_h], dtype=torch.float32)
         return b
 
@@ -68,7 +85,7 @@ class PretrainedObjectDetectionModelPrediction:
             ax.add_patch(plt.Rectangle((xmin, ymin), xmax - xmin, ymax - ymin,
                                        fill=False, color=c, linewidth=3))
             cl = p.argmax()
-            text = f'{self.id2label[cl.item()]}: {p[cl]:0.2f}'
+            text = f'{self.classes[cl]}: {p[cl]:0.2f}'
             ax.text(xmin, ymin, text, fontsize=15,
                     bbox=dict(facecolor='yellow', alpha=0.5))
         plt.axis('off')
@@ -86,15 +103,14 @@ class PretrainedObjectDetectionModelPrediction:
         results = self.plot_results(image, probas[keep], bboxes_scaled)
         return results
 
-    def object_detection_classifier(self):
-        """
-        This method makes an image classification on a pretrained model.
-        """
-        classifier = VisionClassifierInference(
-            feature_extractor=self.feature_extractor_pretrained,
-            model=self.model_pretrained,
-        )
-        return classifier
+    def plot_image_classified(self, imagen_uploaded):
+        image = Image.open(imagen_uploaded).convert('RGB')
+        outputs = self.model_pretrained(self.image_transform(image).unsqueeze(0))
+        probas = outputs['logits'].softmax(-1)[0, :, :-1]
+        keep = probas.max(-1).values > 0.9
+        #bboxes_scaled = self.rescale_bboxes(outputs['pred_boxes'][0, keep], image.size)
+        #self.plot_results(image, probas[keep], bboxes_scaled)
+        return keep
 
     def image_classification_classifier_my_model(self, uploaded_file):
         """
