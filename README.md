@@ -20,8 +20,11 @@ NotImplementedYet
 > pip 
 
 ## Use
-NotImplementedYet
-1. Install the package
-2. Run the following command to open your app
 
-> streamlit run 
+1. Clone the repo.
+2. Run the following command on your terminal to open your app.
+
+> streamlit run teggs_me_app.py
+
+3. Upload an image.
+4. Wait for you classification.

@@ -3,7 +3,6 @@ import torch
 import torch.utils.data
 from PIL import Image
 from pycocotools.coco import COCO
-import numpy as np
 
 
 class CocoTeggsme(torch.utils.data.Dataset):
