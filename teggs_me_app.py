@@ -32,30 +32,29 @@ def main():
     if 'logged_user' not in st.session_state:
         with st.container():
             st.subheader("Login")
-            username = st.text_input("User Name")
+            username = st.text_input("Username")
             password = st.text_input("Password", type='password')
             st.button("Login", on_click=user_ver, args=(username, password))
 
+    elif 'classifier' not in st.session_state:
+        with st.container():
+            st.subheader("Let's start classifying")
+            st.button("Load the classifier", on_click=classifier_load)
     else:
-        if 'classifier' not in st.session_state:
-            with st.container():
-                st.subheader("Let's start classifying")
-                st.button("Load the classifier", on_click=classifier_load)
+        st.subheader("Add Your Image to classify")
+        uploaded_file = st.file_uploader(" ", type=['png', 'jpg', 'jpeg'])
+        if uploaded_file is None:
+            st.write("Please upload an Image to Classify")
         else:
-            st.subheader("Add Your Image to classify")
-            uploaded_file = st.file_uploader(" ", type=['png', 'jpg', 'jpeg'])
-            if uploaded_file is None:
-                st.write("Please upload an Image to Classify")
-            else:
-                st.success("Your image is gonna start being classified")
-                u_img = Image.open(uploaded_file)
-                show = st.image(u_img, use_column_width=True)
-                show.image(u_img, 'Uploaded Image', use_column_width=True)
-                with st.spinner('Model Classifying ...'):
-                    prediction = st.session_state.classifier.plot_image_classified(uploaded_file)
-                    st.sidebar.success('Done!')
-                    st.sidebar.header("Predicted class:")
-                    st.sidebar.write(prediction)
+            st.success("Your image is gonna start being classified")
+            u_img = Image.open(uploaded_file)
+            show = st.image(u_img, use_column_width=True)
+            show.image(u_img, 'Uploaded Image', use_column_width=True)
+            with st.spinner('Model Classifying ...'):
+                prediction = st.session_state.classifier.plot_image_classified(uploaded_file)
+                st.sidebar.success('Done!')
+                st.sidebar.header("Predicted class:")
+                st.sidebar.write(prediction)
 
 
 if __name__ == '__main__':
