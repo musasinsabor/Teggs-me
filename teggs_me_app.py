@@ -40,17 +40,17 @@ def main():
         if 'classifier' not in st.session_state:
             with st.container():
                 st.subheader("Let's start classifying")
-                if st.button("Load the classifier", on_click=classifier_load):
-                    st.subheader("Add Your Image to classify")
-
-                    uploaded_file = st.file_uploader(" ", type=['png', 'jpg', 'jpeg'])
-                    if uploaded_file is None:
-                        st.write("Please upload an Image to Classify")
-                    else:
-                        st.success("Your image is gonna start being classified")
-                        u_img = Image.open(uploaded_file)
-                        show = st.image(u_img, use_column_width=True)
-                        show.image(u_img, 'Uploaded Image', use_column_width=True)
+                st.button("Load the classifier", on_click=classifier_load)
+        else:
+            st.subheader("Add Your Image to classify")
+            uploaded_file = st.file_uploader(" ", type=['png', 'jpg', 'jpeg'])
+            if uploaded_file is None:
+                st.write("Please upload an Image to Classify")
+            else:
+                st.success("Your image is gonna start being classified")
+                u_img = Image.open(uploaded_file)
+                show = st.image(u_img, use_column_width=True)
+                show.image(u_img, 'Uploaded Image', use_column_width=True)
 
 
 if __name__ == '__main__':
