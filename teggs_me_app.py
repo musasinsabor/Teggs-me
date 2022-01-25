@@ -51,6 +51,11 @@ def main():
                 u_img = Image.open(uploaded_file)
                 show = st.image(u_img, use_column_width=True)
                 show.image(u_img, 'Uploaded Image', use_column_width=True)
+                with st.spinner('Model Classifying ...'):
+                    prediction = st.session_state.classifier.plot_image_classified(uploaded_file)
+                    st.sidebar.success('Done!')
+                    st.sidebar.header("Predicted class:")
+                    st.sidebar.write(prediction)
 
 
 if __name__ == '__main__':
